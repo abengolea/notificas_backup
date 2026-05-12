@@ -1,0 +1,30 @@
+#inbox-list{
+    ion-menu-toggle{
+      ion-item{
+        cursor: pointer;      
+      } 
+      ion-item:hover{
+        i:hover{
+          color: var(--ion-color-secondary);
+        }      
+        ion-label:hover{
+          color: var(--ion-color-secondary) !important;      
+        }
+      }
+      i {
+        color: var(--ion-color-medium);
+        font-size: 20px;
+        margin-right: 10px;
+        vertical-align: middle;
+        width: 20px;
+        display: inline-block;
+      }    
+      ion-label {
+        white-space: nowrap;
+        padding: 0;
+        display: inline-block;
+        transition: none;
+        font-weight: 400;      
+      }        
+    }
+  }

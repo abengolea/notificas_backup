@@ -1,0 +1,185 @@
+/*
+ * App Global CSS
+ * ----------------------------------------------------------------------------
+ * Put style rules here that you want to apply globally. These styles are for
+ * the entire app and not just one component. Additionally, this file can be
+ * used as an entry point to import other CSS/Sass files to be included in the
+ * output CSS.
+ * For more information on global stylesheets, visit the documentation:
+ * https://ionicframework.com/docs/layout/global-stylesheets
+ */
+
+/* Core CSS required for Ionic components to work properly */
+@import "~@ionic/angular/css/core.css";
+
+/* Basic CSS for apps built with Ionic */
+@import "~@ionic/angular/css/normalize.css";
+@import "~@ionic/angular/css/structure.css";
+@import "~@ionic/angular/css/typography.css";
+@import "~@ionic/angular/css/display.css";
+
+/* Optional CSS utils that can be commented out */
+@import "~@ionic/angular/css/padding.css";
+@import "~@ionic/angular/css/float-elements.css";
+@import "~@ionic/angular/css/text-alignment.css";
+@import "~@ionic/angular/css/text-transformation.css";
+@import "~@ionic/angular/css/flex-utils.css";
+
+@import "~quill/dist/quill.core.css";
+@import "~quill/dist/quill.snow.css";
+
+[contenteditable] {
+  -webkit-user-select: text;
+  user-select: text;
+}
+
+ion-content {
+  --background: rgb(250, 251, 254);
+}
+
+.header-md::after {
+  background-image: none;
+}
+
+ion-header {
+  transition: all 0.3s ease-in-out;
+  -ms-box-shadow: 0 16px 40px 0 rgba(0, 0, 0, 0.0392157);
+  -o-box-shadow: 0 16px 40px 0 rgba(0, 0, 0, 0.0392157);
+  box-shadow: 0 16px 40px 0 rgb(0 0 0 / 4%);
+}
+
+ion-toolbar {
+  min-height: 80px;
+}
+
+ion-card {
+  .bg-white {
+    background-color: var(--ion-color-white) !important;
+    --background: var(--ion-color-white) !important;
+  }
+  border: none;
+  -ms-box-shadow: 0 16px 40px 0 rgba(0, 0, 0, 0.0392157);
+  -o-box-shadow: 0 16px 40px 0 rgba(0, 0, 0, 0.0392157);
+  box-shadow: 0 16px 40px 0 rgb(0 0 0 / 4%);
+
+  img {
+    max-height: 100%;
+  }
+}
+
+.link {
+  cursor: pointer;
+}
+
+.hover-effect:hover {
+  box-shadow: 0 0 11px rgba(33, 33, 33, 0.2);
+}
+
+.letra-avatar {
+  background: lightblue;
+  text-align: center;
+  border-radius: 100%;
+  height: 40px;
+  width: 40px;
+  font-size: 20px;
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  color: white;
+}
+
+.buscador-head {
+  border-radius: 8px;
+  border: 1px solid #f1f1f1;
+  --box-shadow: none;
+}
+
+.ion-text-bold {
+  font-weight: bold;
+}
+
+.ql-container {
+  background-color: white !important;
+}
+
+.ql-toolbar {
+  background-color: white !important;
+}
+
+.color-secondary {
+  color: var(--ion-color-secondary) !important;
+}
+
+ionic-selectable-modal {
+  ion-toolbar {
+    padding-top: 11px;
+  }
+}
+
+ion-item {
+  --highlight-color-valid: var(--ion-color-secondary); // valid underline color
+}
+
+.card-bg-secondary {
+  background-color: var(--ion-color-secondary) !important;
+  ionic-selectable {
+    .ionic-selectable-value {
+      color: white;
+    }
+
+    .ionic-selectable-icon-inner {
+      color: white;
+    }
+  }
+}
+
+.modalhistorico .modal-wrapper {
+  width: 80%;
+  height: 90%;
+}
+
+
+
+.buttonCss {
+
+  button.alert-button.cancel-button{
+    background-color: rgb(190, 24, 24)!important;
+    color: white!important;
+    border-radius: 10px;
+  }
+  button.alert-button.cancel-button:hover{
+    box-shadow: 6px 5px 5px black;
+  }
+
+  button.alert-button.confirm-button{
+    background-color: green!important;
+    color: white!important;
+    border-radius: 10px;
+  }
+  button.alert-button.confirm-button:hover{
+    box-shadow: 6px 5px 5px black;
+  }
+
+  .alert-wrapper {
+    max-width: 400px;
+  }
+  .alert-coins{
+    color:purple;
+    font-weight: bold;
+    font-size: 22px;
+  }
+  .alert-input{
+    margin-top:0;
+    padding-top:0;
+  }
+  .alert-input-group.sc-ion-alert-md {
+     padding-top: 0px!important;
+    padding-bottom: 10px;
+    color: var(--ion-color-step-550, #39cf14);
+  }
+  .alert-message.sc-ion-alert-md{
+    padding-top: 0px!important;
+   padding-bottom: 10px;
+   color: var(--ion-color-step-550, #06628d);
+ }
+}

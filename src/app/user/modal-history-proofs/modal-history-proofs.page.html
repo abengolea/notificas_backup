@@ -1,0 +1,117 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="secondary">
+      <ion-button title="Salir" (click)="salir()">
+        Salir
+        <ion-icon slot="end" name="exit">
+        </ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title style="color:#1B4578;"> <span style="color:gray;font-size:14px"> Email: </span>{{email}}</ion-title>
+    <ion-title style="color:#1B4578;"> <span style="color:gray;font-size:14px"> Nombre y Apellido: </span>{{nombre}} -
+      {{apellido}}</ion-title>
+
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+
+  <h2>Historico de Movimientos y Creditos Disponibles</h2>
+  <ion-grid>
+    <ion-row>
+
+      <ion-col size="6" size-sm="6">
+        <ion-card class="card-bg-secondary">
+          <ion-grid>
+            <ion-row class="ion-align-items-center">
+              <ion-col>
+                <ion-card-header>
+                  <ion-card-subtitle></ion-card-subtitle>
+                  <ion-card-title color="light" style="font-size:50px">
+                    {{proofs}}
+                  </ion-card-title>
+                </ion-card-header>
+              </ion-col>
+              <ion-col size="auto" class="ion-text-center ion-padding ion-hide-md-down">
+                <img src="/assets/images/transaccion2.png" width="60px" height="60px" style="max-width: 60px" />
+              </ion-col>
+            </ion-row>
+          </ion-grid>
+          <ion-card-content>
+            <ion-card-title color="light" style="margin: 0;padding: 0">
+              Movimientos Realizados
+            </ion-card-title>
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+
+      <ion-col size="6" size-sm="6">
+        <ion-card class="card-bg-secondary">
+          <ion-grid>
+            <ion-row class="ion-align-items-center">
+              <ion-col>
+                <ion-card-header>
+                  <ion-card-subtitle></ion-card-subtitle>
+                  <ion-card-title color="light" style="font-size:50px">
+                    {{coins}}
+                  </ion-card-title>
+                </ion-card-header>
+              </ion-col>
+              <ion-col size="auto" class="ion-text-center ion-padding ion-hide-md-down">
+                <img src="/assets/images/billetera_monedas.png" style="max-width: 60px" />
+              </ion-col>
+            </ion-row>
+          </ion-grid>
+          <ion-card-content>
+            <ion-card-title color="light">
+              Creditos Disponibles
+            </ion-card-title>
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+
+    </ion-row>
+  </ion-grid>
+
+
+
+  <ion-grid>
+    <ion-row>
+      <ion-col size="auto">
+        <h1 class="ion-margin-start color-secondary">Movimientos</h1>
+      </ion-col>
+      <ion-col *ngIf="wait">
+        <img src="/assets/images/loading.gif" style="height: 60px; margin-top: 5px" />
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col size="12" *ngIf="movimientos.length == 0 && !wait">
+        No existen movimientos.
+      </ion-col>
+      <ion-col size="12" *ngIf="movimientos.length > 0 && !wait">
+        <ion-card class="bg-white">
+          <ion-grid class="ion-padding">
+            <ion-row class="ion-padding">
+              <ion-col size="3" class="ion-text-bold">Fecha</ion-col>
+              <ion-col size="3" class="ion-text-bold">Tipo</ion-col>
+              <ion-col size="4" class="ion-text-bold">Detalle</ion-col>
+              <ion-col size="2" class="ion-text-bold">Total</ion-col>
+            </ion-row>
+            <ion-row class="ion-padding hover-effect link" *ngFor="let m of movimientos">
+              <ion-col size="3">{{m.date | date: 'dd/MM/yyyy HH:mm'}}</ion-col>
+              <ion-col size="3">{{m.proofType_name}}
+                <ion-text *ngIf="m.proofState_id!=2" [color]="(m.proofState_id==1)?'warning':'danger'">
+                  {{m.proofState_name}}</ion-text>
+              </ion-col>
+              <ion-col size="4">{{m.details}}</ion-col>
+              <ion-col size="2">{{m.total}} </ion-col>
+            </ion-row>
+          </ion-grid>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+
+
+</ion-content>

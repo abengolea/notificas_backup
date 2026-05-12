@@ -1,0 +1,73 @@
+<ion-content>
+  <ion-grid>
+    <ion-row>
+      <ion-col>
+        <h1>Contactos y Usuarios públicos</h1>
+      </ion-col>
+    </ion-row>
+    <ion-row class="ion-padding">
+      <ion-col size="8">
+        <ion-item>
+          <ion-input
+            type="text"
+            aria-placeholder="Buscar..."
+            [(ngModel)]="textSearch"
+            (keyup.enter)="search()"
+            [disabled]="wait"
+            placeholder="Buscar..."
+            autocorrect="off"
+            autocapitalize="none"
+          >
+          </ion-input>
+          <ion-button (click)="search()" [disabled]="wait || !textSearch">
+            Buscar
+          </ion-button>
+        </ion-item>
+      </ion-col>
+      <ion-col size="2">
+        <ion-button (click)="newContact()" color="primary">
+          Nuevo Contacto
+        </ion-button>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col size="12">
+        <ion-card class="bg-white">
+          <ion-grid class="ion-padding">
+            <ion-row class="ion-padding">
+              <ion-col size="4" class="ion-text-bold">Email</ion-col>
+              <ion-col size="2" class="ion-text-bold">Nombre</ion-col>
+              <ion-col size="2" class="ion-text-bold">Apellido</ion-col>
+              <ion-col size="2" class="ion-text-bold">Teléfono</ion-col>
+              <ion-col size="1" class="ion-text-bold">DNI</ion-col>
+              <ion-col size="1" class="ion-text-bold">CUIT</ion-col>
+            </ion-row>
+            <ion-row
+              class="ion-padding"
+              *ngFor="let user of users"
+              class="link hover-effect"
+              (click)="editContact(user)"
+            >
+              <ion-col size="4"
+                ><ion-icon
+                  name="person-circle-outline"
+                  *ngIf="!user.publicData"
+                ></ion-icon>
+                <ion-icon
+                  name="globe-outline"
+                  *ngIf="user.publicData"
+                ></ion-icon>
+                {{user.email}}</ion-col
+              >
+              <ion-col size="2">{{user.firstname}}</ion-col>
+              <ion-col size="2">{{user.lastname}}</ion-col>
+              <ion-col size="2">{{user.phoneNumber}}</ion-col>
+              <ion-col size="1">{{user.dni}}</ion-col>
+              <ion-col size="1">{{user.cuit}}</ion-col>
+            </ion-row>
+          </ion-grid>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>

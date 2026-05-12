@@ -1,0 +1,77 @@
+variables:
+  AWS_DEFAULT_REGION : 'us-east-1'
+
+stages:
+      - setup
+      - build
+      - deploy
+
+before_script:
+#  - chmod 755 ./CI/env.sh
+  - eval "$(./CI/env.sh)"
+  - sed -i 's/ash/bash/' ./CI/env.sh
+  - eval "$(./CI/env.sh)"
+  - echo $CI_COMMIT_REF_NAME
+  - echo $FOLDER
+  - echo $ENVIRONMENT
+  - echo $APP
+  - echo $API
+
+
+infra:
+  stage: setup
+  environment:
+    name: infra
+  image: registry.gitlab.com/alberione/notificas/notificas-app/infra:0.15
+  script:
+    - cd infra/${FOLDER}
+    - /tools/terraform/terraform --version
+    - /tools/terraform/terraform init
+    - /tools/terraform/terraform plan
+    - /tools/terraform/terraform apply -input=false -auto-approve
+    - /tools/terraform/terraform output -json > ../../output.json
+  artifacts:
+    name: output/infra_$CI_COMMIT_REF_NAME
+    expire_in: 1 week
+    paths:
+      - infra/output.json
+  dependencies: []
+  only:
+    - master
+    - 1-createcicd-pipeline-in-gitlab
+    - staging
+
+build:
+  stage: build
+  environment: production
+  image: registry.gitlab.com/alberione/notificas/notificas-app/angular:develop.13.1.4
+#  cache:
+#    paths:
+#    - node_modules/
+  script:
+  - echo $DB_PORT
+  - sed -i "s#NOTIFICAS_API#${API}#" src/app/services/global.service.ts
+  - rm -rf node_modules
+  - npm install
+  - ng build --prod --aot --outputHashing=all --base-href /
+  artifacts:
+    name: compilation/$CI_COMMIT_REF_NAME
+    paths:
+    - www/
+    expire_in: 1 day
+
+deploy:
+  stage: deploy
+  environment: production
+  image: registry.gitlab.com/alberione/notificas/notificas-app/infra:0.15
+#  cache:
+#    paths:
+#    - node_modules/
+  script:
+  - export BUCKET="$(jq -r '.buckets.value.webBucket' infra/output.json)"
+  - cd www
+  - aws s3 cp ./ s3://$BUCKET/ --recursive
+  only:
+    - master
+    - 1-createcicd-pipeline-in-gitlab
+    - staging

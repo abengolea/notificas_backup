@@ -1,0 +1,103 @@
+<ion-header class="ion-hide-md ion-text-center">
+  <ion-toolbar>
+    <img
+      src="/assets/images/logo_notificas.jpg"
+      style="margin: 15px;
+      max-height: 40px;"
+    />
+    <ion-button
+      color="success"
+      style="float: right; margin: 20px 15px"
+      *ngIf="banResponder"
+      (click)="reply()"
+      >Responder</ion-button
+    >
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-row>
+    <ion-col style="padding: 10px">
+      <ion-card style="max-width: 1024px; margin: 10px auto">
+        <ion-card-header *ngIf="!wait">
+          <ion-card-subtitle *ngIf="document.documentType">
+            <h3>{{document.documentType.name}}</h3>
+            <h6>
+              De:
+              <ion-text class="text-destacado" *ngFor="let du of document.documentUsers">
+                <ion-label color="dark" *ngIf="du.documentUserType.id==3">
+                  {{du.user.firstname}} {{du.user.lastname}}
+                </ion-label>
+                <ion-label color="dark" *ngIf="du.documentUserType.id==5">
+                  representando a {{du.user.firstname}} {{du.user.lastname}}
+                </ion-label>
+              </ion-text>
+            </h6>
+            <h6>
+              Para:
+              <ion-text class="text-destacado" *ngFor="let du of document.documentUsers">
+                <ion-label color="dark" *ngIf="du.documentUserType.id==4">
+                  {{du.user.firstname}} {{du.user.lastname}} ({{du.user.email}})
+                </ion-label>
+              </ion-text>
+            </h6>
+            <h6>
+              Enviado:
+              <ion-label class="text-destacado" color="dark"
+                >{{document.transactions[0].date | date: 'dd/MM/yyyy HH:mm'}}
+              </ion-label>
+            </h6>
+          </ion-card-subtitle>
+        </ion-card-header>
+        <ion-card-header *ngIf="wait" class="ion-text-center">
+          <img src="/assets/images/loading.gif" style="height: 60px;margin-top: 5px;" />
+        </ion-card-header>
+      </ion-card>
+      <ion-card *ngIf="!wait" style="max-width: 1024px; margin: 10px auto">
+        <ion-card-header>
+          <ion-card-title>{{document.subject}}</ion-card-title>
+        </ion-card-header>
+        <ion-card-content>
+          <div [innerHTML]="document.body"></div>
+        </ion-card-content>
+      </ion-card>
+      <ion-card
+        style="max-width: 1024px; margin: 10px auto"
+        *ngIf="document.multimedias.length > 0 &&  !wait"
+      >
+        <ion-card-header>
+          <ion-card-subtitle>Adjuntos:</ion-card-subtitle>
+        </ion-card-header>
+
+        <ion-card-content>
+          <ion-item *ngFor="let multi of document.multimedias; index as i">
+            <ion-label class="link"
+              ><a (click)="download(multi.key)">{{multi.fileName}}</a></ion-label
+            >
+          </ion-item>
+        </ion-card-content>
+      </ion-card>
+      <ion-card *ngIf="!wait" style="max-width: 1024px; margin: 0 auto">
+        <ion-card-header>
+          <h3>Movimientos</h3>
+        </ion-card-header>
+
+        <ion-card-content>
+          <div *ngFor="let t of document.transactions"  class="movimientos">
+            <div
+              *ngIf="muestraSiNoEsRemitente(t)"
+              (click)="t.banShowMore = !t.banShowMore"
+              style="cursor: pointer"             
+            >
+            <b>
+              <ion-icon [name]="(t.banShowMore)?'chevron-down-outline':'chevron-forward-outline'" color="secondary"></ion-icon> 
+              {{t.date | date: 'dd/MM/yyyy H:mm'}} </b>: {{t.transactionType.name}}:
+              {{t.user.email}}
+              <div *ngIf="t.banShowMore" [innerHTML]="showMoreInfo(t)" style="padding-left: 10px;"></div>
+            </div>
+          </div>
+        </ion-card-content>
+      </ion-card>
+    </ion-col>
+  </ion-row>
+</ion-content>

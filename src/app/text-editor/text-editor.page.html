@@ -1,0 +1,788 @@
+<ion-content>
+  <ion-grid>
+    <ion-row>
+      <ion-col>
+        <h1
+          *ngIf="(!document.id || document.id==0) && !isTypeReply"
+          class="ion-margin-start"
+        >
+          <ion-text color="secondary">Nuevo envío</ion-text>
+        </h1>
+        <h1
+          *ngIf="(document.id && document.id != 0) && !isTypeReply"
+          class="ion-margin-start"
+        >
+          <ion-text color="secondary">Edición de envío</ion-text>
+        </h1>
+        <h1 *ngIf="isTypeReply" class="ion-margin-start">
+          <ion-text color="secondary">Responder Envío</ion-text>
+        </h1>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+  <ion-card class="ion-padding">
+    <ion-grid>
+      <ion-row>
+        <ion-col size="12">
+          <ion-label class="title-label">Tipo de Envío (*)</ion-label>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col size="12">
+          <ionic-selectable
+            #senderComponent
+            [isMultiple]="false"
+            [items]="documentTypes"
+            [(ngModel)]="document.documentType"
+            searchPlaceholder="Buscar..."
+            [disabled]="isTypeReply"
+            itemTextField="name"
+            [canSearch]="true"
+            [canAddItem]="false"
+            itemValueField="id"
+            closeButtonText="Cancelar"
+            addButtonText="Crear Nuevo"
+            confirmButtonText="Aceptar"
+            (onSearch)="searchDocumentType($event)"
+            (onChange)="documentTypeChange($event)"
+            placeholder="Seleccionar tipo de envío"
+          >
+            <ng-template ionicSelectableSearchFailTemplate>
+              <div padding>Buscar tipos de envíos</div>
+            </ng-template>
+          </ionic-selectable>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col size="12">
+          <ion-row>
+            <ion-col size="12">
+              <ion-label class="title-label">Remitente (*)</ion-label>
+            </ion-col>
+          </ion-row>
+          <ion-row>
+            <ion-col size="12">
+              <ionic-selectable
+                #senderComponent
+                [shouldFocusSearchbar]="true"
+                [isMultiple]="false"
+                [items]="userList"
+                [(ngModel)]="document.senderSelected"
+                itemValueField="id"
+                searchPlaceholder="Buscar..."
+                itemTextField="lastname"
+                [disabled]="isTypeReply || document.senderType === 'personal'"
+                [canSearch]="true"
+                [canAddItem]="true"
+                (onSearch)="searchUsers($event)"
+                placeholder="Seleccionar sender"
+                closeButtonText="Cancelar"
+                addButtonText="Crear Nuevo"
+                confirmButtonText="Aceptar"
+              >
+                <ng-template ionicSelectableSearchFailTemplate>
+                  <div class="ion-padding ion-text-center">
+                    <ion-text color="secondary"
+                      >Buscar usuarios por nombre, email, dni/cuit</ion-text
+                    >
+                  </div>
+                </ng-template>
+                <ng-template ionicSelectableItemTemplate let-remitente="item">
+                  <ion-label text-wrap>
+                    <ion-icon
+                      name="person-circle-outline"
+                      *ngIf="!remitente.publicData"
+                    ></ion-icon>
+                    <ion-icon
+                      name="globe-outline"
+                      *ngIf="remitente.publicData"
+                    ></ion-icon>
+                    {{remitente.lastname}} {{remitente.firstname}}
+                    <br />
+                    <ion-text color="primary">{{remitente.email}}</ion-text>
+                    <ion-text color="primary" *ngIf="remitente.dni">
+                      | {{remitente.dni}}</ion-text
+                    >
+                  </ion-label>
+                </ng-template>
+                <ng-template
+                  ionicSelectableValueTemplate
+                  let-senderSelected="value"
+                >
+                  <div class="ionic-selectable-value-item">
+                    <span *ngIf="document.senderSelected"
+                      >{{document.senderSelected.firstname+'
+                      '+document.senderSelected.lastname+' '}}</span
+                    >
+                    <ion-text color="primary" *ngIf="document.senderSelected"
+                      >{{document.senderSelected.email}}
+                    </ion-text>
+                  </div>
+                </ng-template>
+                <ng-template
+                  ionicSelectableAddItemTemplate
+                  let-port="item"
+                  let-isAdd="isAdd"
+                >
+                  <form [formGroup]="senderUserForm" novalidate>
+                    <ion-list>
+                      <ion-item-divider> Nuevo Remitente </ion-item-divider>
+                      <ion-item>
+                        <ion-label>Apellido (*)</ion-label>
+                        <ion-input
+                          type="text"
+                          formControlName="lastname"
+                          autocorrect="off"
+                          autocapitalize="none"
+                        >
+                        </ion-input>
+                        <div *ngFor="let error of errorMessages.lastname">
+                          <ng-container
+                            *ngIf="lastname.hasError(error.type) && (lastname.dirty || lastname.touched)"
+                          >
+                            <small class="error-message"
+                              >{{error.message}}</small
+                            >
+                          </ng-container>
+                        </div>
+                      </ion-item>
+                      <ion-item>
+                        <ion-label class="title-label">Nombre (*)</ion-label>
+                        <ion-input
+                          type="text"
+                          formControlName="firstname"
+                          autocorrect="off"
+                          autocapitalize="none"
+                        >
+                        </ion-input>
+                        <div *ngFor="let error of errorMessages.firstname">
+                          <ng-container
+                            *ngIf="firstname.hasError(error.type) && (firstname.dirty || firstname.touched)"
+                          >
+                            <small class="error-message"
+                              >{{error.message}}</small
+                            >
+                          </ng-container>
+                        </div>
+                      </ion-item>
+                      <ion-item>
+                        <ion-label class="title-label">DNI</ion-label>
+                        <ion-input
+                          type="text"
+                          formControlName="dni"
+                          autocorrect="off"
+                          autocapitalize="none"
+                        >
+                        </ion-input>
+                      </ion-item>
+                      <ion-item>
+                        <ion-label class="title-label">Email (*)</ion-label>
+                        <ion-input
+                          autocorrect="off"
+                          autocapitalize="none"
+                          formControlName="email"
+                        >
+                        </ion-input>
+                        <div *ngFor="let error of errorMessages.email">
+                          <ng-container
+                            *ngIf="email.hasError(error.type) && (email.dirty || email.touched)"
+                          >
+                            <small class="error-message"
+                              >{{error.message}}</small
+                            >
+                          </ng-container>
+                        </div>
+                      </ion-item>
+                      <ion-item>
+                        <ion-label class="title-label"
+                          >Tipo de Usuario (*)</ion-label
+                        >
+                        <ion-select
+                          formControlName="userType"
+                          placeholder="Seleccionar"
+                          [(ngModel)]="userTypeSelected"
+                          [compareWith]="compararPorId"
+                        >
+                          <ion-select-option
+                            *ngFor="let ut of userTypes"
+                            [value]="ut"
+                            >{{ut.name}}</ion-select-option
+                          >
+                        </ion-select>
+                      </ion-item>
+                      <ion-item>
+                        <ion-label class="title-label">Teléfono</ion-label>
+                        <ion-input
+                          type="text"
+                          formControlName="phoneNumber"
+                          autocorrect="off"
+                          autocapitalize="none"
+                        >
+                        </ion-input>
+                      </ion-item>
+                      <ion-item lines="none">
+                        <ion-grid>
+                          <ion-row>
+                            <ion-col>
+                              <ion-button
+                                expand="full"
+                                color="danger"
+                                [disabled]="wait"
+                                (click)="cancelSenderForm()"
+                              >
+                                Cancelar
+                              </ion-button>
+                            </ion-col>
+                            <ion-col>
+                              <ion-button
+                                expand="full"
+                                color="primary"
+                                [disabled]="!destionationUserForm.valid || wait"
+                                (click)="submitUserSender()"
+                              >
+                                Guardar
+                              </ion-button>
+                            </ion-col>
+                          </ion-row>
+                        </ion-grid>
+                      </ion-item>
+                    </ion-list>
+                  </form>
+                </ng-template>
+              </ionic-selectable>
+            </ion-col>
+            <!-- <ion-col size="12" *ngIf="document.senderType === 'legalrepresentative'"> -->
+            <ion-col size="12" *ngIf="radioShow">
+              <ion-radio-group
+                value="personal"
+                (ionChange)="verificarCambioTipoRemitente()"
+                [(ngModel)]="document.senderType"
+              >
+                <ion-row>
+                  <ion-col size-sm="4" size="12">
+                    <ion-item lines="none">
+                      <ion-label>A título personal</ion-label>
+                      <ion-radio
+                        slot="start"
+                        name="sender"
+                        value="personal"
+                      ></ion-radio>
+                    </ion-item>
+                  </ion-col>
+                  <ion-col size-sm="4" size="12">
+                    <ion-item lines="none">
+                      <ion-label>Patrocinante de un cliente</ion-label>
+                      <ion-radio
+                        slot="start"
+                        name="sender"
+                        value="sponsoring"
+                      ></ion-radio>
+                    </ion-item>
+                  </ion-col>
+                  <ion-col size-sm="4" size="12">
+                    <ion-item lines="none">
+                      <ion-label>Apoderado de otra persona</ion-label>
+                      <ion-radio
+                        slot="start"
+                        name="sender"
+                        value="legalrepresentative"
+                      ></ion-radio>
+                    </ion-item>
+                  </ion-col>
+                </ion-row>
+              </ion-radio-group>
+            </ion-col>
+          </ion-row>
+        </ion-col>
+      </ion-row>
+
+      <ion-row *ngIf="document.senderType === 'legalrepresentative'">
+        <ion-col size="12">
+          <ion-label class="title-label">Representado</ion-label>
+        </ion-col>
+        <ion-col size="12">
+          <ionic-selectable
+            #senderLegalrepresentativeSelectedComponent
+            [shouldFocusSearchbar]="true"
+            [isMultiple]="false"
+            [items]="userList"
+            [(ngModel)]="senderLegalrepresentativeSelected"
+            itemValueField="id"
+            searchPlaceholder="Buscar..."
+            itemTextField="lastname"
+            [canSearch]="true"
+            (onChange)="checkAttachments($event)"
+            (onSearch)="searchUsers($event,true)"
+            placeholder="Seleccionar"
+            closeButtonText="Cancelar"
+          >
+            <ng-template ionicSelectableSearchFailTemplate>
+              <div class="ion-padding ion-text-center">
+                <ion-text color="secondary"
+                  >Buscar usuarios por nombre, email, dni/cuit</ion-text
+                >
+              </div>
+            </ng-template>
+            <ng-template ionicSelectableItemTemplate let-user="item">
+              <ion-label text-wrap>
+                <ion-icon
+                  name="person-circle-outline"
+                  *ngIf="!user.publicData"
+                ></ion-icon>
+                <ion-icon
+                  name="globe-outline"
+                  *ngIf="user.publicData"
+                ></ion-icon>
+                {{user.lastname}} {{user.firstname}}
+                <br />
+                <ion-text color="primary">{{user.email}}</ion-text>
+                <ion-text color="primary" *ngIf="user.dni">
+                  | {{user.dni}}</ion-text
+                >
+              </ion-label>
+            </ng-template>
+            <ng-template ionicSelectableValueTemplate let-userSelected="value">
+              <div
+                class="ionic-selectable-value-item"
+                *ngIf="userSelected.firstname"
+              >
+                {{userSelected.firstname+' '+userSelected.lastname+'
+                '}}<ion-text color="primary">{{userSelected.email}}</ion-text>
+              </div>
+              <div
+                class="ionic-selectable-value-item"
+                *ngIf="!userSelected.firstname"
+              >
+                Seleccione el contacto a representar
+              </div>
+            </ng-template>
+          </ionic-selectable>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col>
+          <ion-label class="title-label"
+            >Destinatario (*)
+            <span
+              *ngIf="!isTypeReply && document.senderType === 'sponsoring'"
+              style="color: rgb(185, 41, 195); font-weight: 400"
+            >
+              Ingrese en Orden => e-mail del cliente Patrocinado, e-mail del
+              Destinatario final del mensaje</span
+            >
+            <span
+              *ngIf="!isTypeReply && document.senderType === 'sponsoring'&& this.document.destinationSelected.length>2"
+              style="color: red; font-weight: 400"
+            >
+              --- Solo Seleccione Patrocinado y Destinatario Final!!!
+            </span>
+          </ion-label>
+          <ionic-selectable
+            #destinationComponent
+            [shouldFocusSearchbar]="true"
+            [isMultiple]="true"
+            [items]="userList"
+            itemValueField="id"
+            searchPlaceholder="Buscar..."
+            itemTextField="lastname"
+            [canAddItem]="true"
+            [canSaveItem]="true"
+            (onAddItem)="onSaveDestination($event)"
+            (onSaveItem)="onSaveDestination($event)"
+            [canSearch]="true"
+            (onSearch)="searchUsers($event)"
+            placeholder="Seleccionar Destinatario"
+            closeButtonText="Cancelar"
+            addButtonText="Crear Nuevo"
+            confirmButtonText="Aceptar"
+            [(ngModel)]="document.destinationSelected"
+            *ngIf="!isTypeReply"
+          >
+            <ng-template ionicSelectableSearchFailTemplate>
+              <div class="ion-padding ion-text-center">
+                <ion-text color="secondary"
+                  >Buscar usuarios por nombre, email, dni/cuit</ion-text
+                >
+              </div>
+            </ng-template>
+            <ng-template ionicSelectableItemTemplate let-destination="item">
+              <ion-label text-wrap>
+                <ion-icon
+                  class="icon-listado-personas"
+                  name="person-circle-outline"
+                  *ngIf="!destination.publicData"
+                >
+                </ion-icon>
+                <ion-icon
+                  class="icon-listado-personas"
+                  name="globe-outline"
+                  *ngIf="destination.publicData"
+                ></ion-icon>
+                {{destination.lastname}} {{destination.firstname}}
+                <br />
+                <ion-text color="medium">{{destination.email}}</ion-text>
+                <ion-text color="medium" *ngIf="destination.dni">
+                  | {{destination.dni}}</ion-text
+                >
+              </ion-label>
+            </ng-template>
+            <ng-template
+              ionicSelectableValueTemplate
+              let-destinationSelected="value"
+              *ngIf="!isTypeReply"
+            >
+              <div>
+                <ion-button class="footer-button" color="primary" size="small"
+                  >Agregar otro/s destinatario/s
+                </ion-button>
+              </div>
+            </ng-template>
+            <ng-template
+              ionicSelectableAddItemTemplate
+              let-user="item"
+              let-isAdd="isAdd"
+            >
+              <form [formGroup]="destionationUserForm" novalidate>
+                <ion-list>
+                  <ion-item-divider>
+                    <span *ngIf="isAdd">Nuevo Destinatario</span>
+                    <span *ngIf="!isAdd">Editar Destinatario</span>
+                  </ion-item-divider>
+                  <ion-item-divider *ngIf="user && user.publicData">
+                    <ion-label color="danger">
+                      <ion-icon name="warning-outline"></ion-icon> Usuario
+                      público, los datos modificados sólo serán visualizados por
+                      usted.
+                    </ion-label>
+                  </ion-item-divider>
+                  <ion-item>
+                    <ion-label class="title-label"
+                      >Tipo de Usuario (*)</ion-label
+                    >
+                    <ion-select
+                      formControlName="userType"
+                      placeholder="Seleccionar"
+                      [(ngModel)]="userTypeSelected"
+                      [compareWith]="compararPorId"
+                    >
+                      <ion-select-option
+                        *ngFor="let ut of userTypes"
+                        [value]="ut"
+                        >{{ut.name}}</ion-select-option
+                      >
+                    </ion-select>
+                  </ion-item>
+                  <ion-item *ngIf="userTypeSelected">
+                    <ion-label
+                      class="title-label"
+                      *ngIf="userTypeSelected.id!=4"
+                      >Apellido (*)</ion-label
+                    >
+                    <ion-label
+                      class="title-label"
+                      *ngIf="userTypeSelected.id==4"
+                      >Razón social (*)</ion-label
+                    >
+                    <ion-input
+                      type="text"
+                      formControlName="lastname"
+                      autocorrect="off"
+                      autocapitalize="none"
+                    >
+                    </ion-input>
+                    <div *ngFor="let error of errorMessages.lastname">
+                      <ng-container
+                        *ngIf="lastname.hasError(error.type) && (lastname.dirty || lastname.touched)"
+                      >
+                        <small class="error-message">{{error.message}}</small>
+                      </ng-container>
+                    </div>
+                  </ion-item>
+                  <ion-item *ngIf="userTypeSelected">
+                    <ion-label
+                      class="title-label"
+                      *ngIf="userTypeSelected.id!=4"
+                      >Nombre (*)</ion-label
+                    >
+                    <ion-label
+                      class="title-label"
+                      *ngIf="userTypeSelected.id==4"
+                      >Nombre fantasía (*)</ion-label
+                    >
+                    <ion-input
+                      type="text"
+                      formControlName="firstname"
+                      autocorrect="off"
+                      autocapitalize="none"
+                    >
+                    </ion-input>
+                    <div *ngFor="let error of errorMessages.firstname">
+                      <ng-container
+                        *ngIf="firstname.hasError(error.type) && (firstname.dirty || firstname.touched)"
+                      >
+                        <small class="error-message">{{error.message}}</small>
+                      </ng-container>
+                    </div>
+                  </ion-item>
+                  <ion-item *ngIf="userTypeSelected && userTypeSelected.id!=4">
+                    <ion-label class="title-label">DNI</ion-label>
+                    <ion-input
+                      type="text"
+                      formControlName="dni"
+                      autocorrect="off"
+                      autocapitalize="none"
+                    >
+                    </ion-input>
+                  </ion-item>
+                  <ion-item *ngIf="userTypeSelected">
+                    <ion-label class="title-label">CUIT</ion-label>
+                    <ion-input
+                      type="text"
+                      formControlName="cuit"
+                      autocorrect="off"
+                      autocapitalize="none"
+                    >
+                    </ion-input>
+                  </ion-item>
+                  <ion-item *ngIf="userTypeSelected">
+                    <ion-label class="title-label">Email (*)</ion-label>
+                    <ion-input
+                      [readonly]="!isAdd"
+                      autocorrect="off"
+                      autocapitalize="none"
+                      formControlName="email"
+                    >
+                    </ion-input>
+                    <div *ngFor="let error of errorMessages.email">
+                      <ng-container
+                        *ngIf="email.hasError(error.type) && (email.dirty || email.touched)"
+                      >
+                        <small class="error-message">{{error.message}}</small>
+                      </ng-container>
+                    </div>
+                  </ion-item>
+                  <ion-item *ngIf="userTypeSelected">
+                    <ion-label class="title-label">Teléfono</ion-label>
+                    <ion-input
+                      type="text"
+                      formControlName="phoneNumber"
+                      autocorrect="off"
+                      autocapitalize="none"
+                    >
+                    </ion-input>
+                  </ion-item>
+                  <ion-item lines="none">
+                    <ion-grid>
+                      <ion-row>
+                        <ion-col>
+                          <ion-button
+                            expand="full"
+                            color="danger"
+                            [disabled]="wait"
+                            (click)="cancel()"
+                          >
+                            Cancelar
+                          </ion-button>
+                        </ion-col>
+                        <ion-col>
+                          <ion-button
+                            expand="full"
+                            color="primary"
+                            [disabled]="!destionationUserForm.valid || wait"
+                            (click)="submitUser()"
+                          >
+                            Guardar
+                          </ion-button>
+                        </ion-col>
+                      </ion-row>
+                    </ion-grid>
+                  </ion-item>
+                </ion-list>
+              </form>
+            </ng-template>
+          </ionic-selectable>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col>
+          <div *ngFor="let user of document.destinationSelected">
+            <ion-chip color="secondary" style="float: left">
+              <span style="cursor: pointer">
+                {{user.firstname}} {{user.lastname}}
+                <ion-icon name="call-outline"></ion-icon>
+                {{user.phoneNumber}}
+                <span *ngIf="user.phoneNumber=='' || user.phoneNumber==null">
+                  S/D
+                </span>
+                <ion-icon name="mail-outline"></ion-icon> {{user.email}}
+              </span>
+              <ion-icon
+                name="close-outline"
+                (click)="removeDestination(user)"
+                style="cursor: pointer"
+                *ngIf="!isTypeReply"
+              ></ion-icon>
+            </ion-chip>
+          </div>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </ion-card>
+  <ion-grid>
+    <ion-row>
+      <ion-col>
+        <ion-item>
+          <ion-label class="title-label" position="fixed">Asunto (*)</ion-label>
+          <ion-input type="text" [(ngModel)]="document.subject"></ion-input>
+        </ion-item>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        <ion-item>
+          <ion-label class="title-label" position="fixed">Plantilla</ion-label>
+          <ionic-selectable
+            [isMultiple]="false"
+            [items]="templates"
+            itemValueField="id"
+            itemTextField="name"
+            [canSearch]="true"
+            searchPlaceholder="Buscar por nombre"
+            (onChange)="templateSelected($event)"
+            placeholder="Desea utilizar alguna plantilla?"
+            closeButtonText="Cancelar"
+            confirmButtonText="Utilizar"
+          >
+            <ng-template ionicSelectableSearchFailTemplate>
+              <div padding>No encontrado</div>
+            </ng-template>
+            <ng-template ionicSelectableItemTemplate let-template="item">
+              {{template.name}}
+            </ng-template>
+          </ionic-selectable>
+        </ion-item>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        <!--quill-editor #quillEditorExample [(ngModel)]="documentBody" format="text" theme="snow"></quill-editor-->
+        <ckeditor
+          [(ngModel)]="document.body"
+          [config]="configCKEditor"
+          type="divarea"
+        >
+        </ckeditor>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+  <ion-card class="ion-padding">
+    <ion-grid>
+      <ion-row>
+        <ion-label class="title-label">Documentación adjunta:</ion-label>
+      </ion-row>
+      <ion-row>
+        <ion-col size="12">
+          <input type="file" (change)="selectAndUploadFiles($event)" />
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col size="12">
+          <ion-item *ngFor="let multi of multimediaList; index as i">
+            <ion-input type="text" [(ngModel)]="multi.fileName"></ion-input>
+            <ion-button
+              class="footer-button"
+              color="primary"
+              (click)="download(multi.key)"
+              [disabled]="wait"
+            >
+              Descargar
+            </ion-button>
+            <ion-button
+              class="footer-button"
+              color="danger"
+              (click)="removeMultimedia(multi)"
+              [disabled]="wait"
+            >
+              Eliminar
+            </ion-button>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </ion-card>
+  <ion-grid>
+    <ion-row [hidden]="document.senderType === 'sponsoring'">
+      <ion-col
+        *ngFor="let tt of transactionstypes; index as i"
+        size-sm="12"
+        size="12"
+      >
+        <ion-item lines="none" (click)="totalCoins()" *ngIf="tt.active">
+          <ion-checkbox
+            class="notification-type"
+            [disabled]="tt.required"
+            [(ngModel)]="tt.checked"
+          ></ion-checkbox>
+          <ion-label>{{tt.name}}</ion-label>
+          <ion-label slot="end" style="text-align: right"
+            >{{tt.total}} Créditos</ion-label
+          >
+        </ion-item>
+      </ion-col>
+    </ion-row>
+    <ion-row [hidden]="userLogin && userLogin.emailValidated">
+      <ion-col size="12">
+        <ion-item
+          lines="none"
+          (click)="goProfile()"
+          color="warning"
+          style="cursor: pointer"
+        >
+          <ion-icon name="warning-outline"></ion-icon> Debe validar su e-mail
+          para poder realizar un envio.
+          <ion-text color="primary">Validar e-mail aquí.</ion-text>
+        </ion-item>
+      </ion-col>
+    </ion-row>
+    <ion-row class="footer-row">
+      <ion-col>
+        <div class="footer-button-container">
+          <ion-button
+            class="footer-button"
+            color="danger"
+            (click)="cancelSend()"
+            [disabled]="wait"
+          >
+            Cancelar</ion-button
+          >
+          <ion-button
+            class="footer-button"
+            color="warning"
+            (click)="saveDraftDocumentTEST()"
+            [disabled]="!canCreateDocument() || wait"
+            *ngIf="!isTypeReply && document.senderType === 'sponsoring' && this.document.destinationSelected.length<3"
+          >
+            Guardar en borrador del Patrocinado</ion-button
+          >
+          <ion-button
+            class="footer-button"
+            color="danger"
+            (click)="saveDraftDocument()"
+            [disabled]="!canCreateDocument() || wait"
+            *ngIf="!isTypeReply && document.senderType !== 'sponsoring'"
+          >
+            Guardar borrador</ion-button
+          >
+          <ion-button
+            color="primary"
+            (click)="sendDocument()"
+            *ngIf="!isTypeReply && document.senderType !== 'sponsoring'"
+            [disabled]="document.senderType === 'sponsoring' || !canCreateDocument() || wait || !userLogin.emailValidated"
+          >
+            Enviar notificación {{document.total}} Créditos</ion-button
+          >
+        </div>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>

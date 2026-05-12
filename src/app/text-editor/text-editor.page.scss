@@ -1,0 +1,29 @@
+.footer-button-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+.notification-type {
+  margin-right: 1rem;
+}
+
+.title-label {
+  font-weight: 600;
+}
+
+ionic-selectable {
+  border-bottom: 1px solid #efefef;
+}
+
+.icon-listado-personas {
+  font-size: 20px;
+  margin-bottom: -4px;
+  color: var(--ion-color-secondary);
+}
+
+ion-chip {
+  ion-icon {
+    margin-bottom: -1px;
+    color: #033f44;
+  }
+}

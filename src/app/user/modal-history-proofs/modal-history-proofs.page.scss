@@ -1,0 +1,11 @@
+ion-toolbar{
+  min-height:0!important;
+}
+
+ion-button:hover{
+  color: red!important;
+}
+ion-toolbar{
+ --background:rgba(188, 220, 245, 0.287);
+ border-bottom: 1px solid black;
+}

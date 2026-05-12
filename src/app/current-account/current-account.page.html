@@ -1,0 +1,177 @@
+<ion-content [fullscreen]="true">
+  <ion-card class="bg-white">
+    <ion-grid>
+      <ion-row>
+        <ion-col size="12" size-sm="7">
+          <ion-grid>
+            <ion-row class="ion-align-items-center">
+              <ion-col size="auto" class="ion-padding-start">
+                <img
+                  src="../../assets/images/billetera_peso.png"
+                  style="max-height: 50px"
+                />
+              </ion-col>
+              <ion-col size="8">
+                <ion-card-header>
+                  <ion-card-subtitle>Bonificación</ion-card-subtitle>
+                  <ion-card-title>¿Tenés un código?</ion-card-title>
+                </ion-card-header>
+                <ion-card-content>
+                  <ion-item>
+                    <ion-input
+                      type="text"
+                      [(ngModel)]="beneficioCode"
+                      [disabled]="wait"
+                      placeholder="ingresá el código aquí"
+                      autocorrect="off"
+                      autocapitalize="none"
+                    >
+                    </ion-input>
+                    <ion-button
+                      (click)="beneficioObtener()"
+                      color="secondary"
+                      [disabled]="wait || (beneficioCode == '')"
+                    >
+                      Ingresar
+                    </ion-button>
+                  </ion-item>
+                </ion-card-content>
+              </ion-col>
+            </ion-row>
+            <ion-row>
+              <ion-col size="auto" class="ion-padding-start">
+                <img
+                  src="../../assets/images/billetera_mano.png"
+                  style="max-height: 50px"
+                />
+              </ion-col>
+              <ion-col size="8">
+                <ion-button
+                  style="margin: 8px 10px"
+                  color="primary"
+                  (click)="goSolicitarCoins()"
+                >
+                  Solicitar créditos al administrador
+                </ion-button>
+              </ion-col>
+            </ion-row>
+          </ion-grid>
+        </ion-col>
+        <ion-col size="12" size-sm="5">
+          <ion-card class="card-bg-secondary">
+            <ion-grid>
+              <ion-row class="ion-align-items-center">
+                <ion-col>
+                  <ion-card-header>
+                    <ion-card-subtitle></ion-card-subtitle>
+                    <ion-card-title color="light">
+                      Tienes {{proofService.balance$ | async}} créditos
+                    </ion-card-title>
+                  </ion-card-header>
+                  <ion-card-content>
+                    <ion-button
+                      color="light"
+                      *ngIf="!banComprar"
+                      (click)="banComprar = !banComprar"
+                      >COMPRAR CRÉDITOS</ion-button
+                    >
+                    <ion-text style="color: #d4d4d4" *ngIf="banComprar"
+                      >Seleccione un pack:</ion-text
+                    >
+                    <ionic-selectable
+                      *ngIf="banComprar"
+                      [isMultiple]="false"
+                      [(ngModel)]="transactionstypeSel"
+                      [items]="transactionstypes"
+                      itemValueField="id"
+                      itemTextField="name"
+                      [canSearch]="true"
+                      searchPlaceholder="Buscar por nombre"
+                      placeholder="Seleccionar pack"
+                      closeButtonText="Cancelar"
+                      confirmButtonText="Comprar"
+                    >
+                      <ng-template ionicSelectableSearchFailTemplate>
+                        <div padding>No encontrado</div>
+                      </ng-template>
+                      <ng-template ionicSelectableItemTemplate let-item="item">
+                        {{item.name}}
+                      </ng-template>
+                    </ionic-selectable>
+                    <ion-button
+                      *ngIf="banComprar"
+                      color="light"
+                      (click)="goCargarSaldo()"
+                    >
+                      Comprar {{transactionstypeSel.total}}<i
+                        class="las la-coins"
+                        style="padding-right: 3px"
+                      ></i>
+                      por ${{transactionstypeSel.price}}
+                    </ion-button>
+                  </ion-card-content>
+                </ion-col>
+                <ion-col
+                  size="auto"
+                  class="ion-text-center ion-padding ion-hide-md-down"
+                >
+                  <img
+                    src="/assets/images/billetera_monedas.png"
+                    style="max-width: 60px"
+                  />
+                </ion-col>
+              </ion-row>
+            </ion-grid>
+          </ion-card>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </ion-card>
+  <ion-grid>
+    <ion-row>
+      <ion-col size="auto">
+        <h1 class="ion-margin-start color-secondary">Movimientos</h1>
+      </ion-col>
+      <ion-col *ngIf="wait">
+        <img
+          src="/assets/images/loading.gif"
+          style="height: 60px; margin-top: 5px"
+        />
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col size="12" *ngIf="movimientos.length == 0 && !wait">
+        No existen movimientos.
+      </ion-col>
+      <ion-col size="12" *ngIf="movimientos.length > 0 && !wait">
+        <ion-card class="bg-white">
+          <ion-grid class="ion-padding">
+            <ion-row class="ion-padding">
+              <ion-col size="3" class="ion-text-bold">Fecha</ion-col>
+              <ion-col size="3" class="ion-text-bold">Tipo</ion-col>
+              <ion-col size="4" class="ion-text-bold">Detalle</ion-col>
+              <ion-col size="2" class="ion-text-bold">Total</ion-col>
+            </ion-row>
+            <ion-row
+              class="ion-padding hover-effect link"
+              *ngFor="let m of movimientos"
+            >
+              <ion-col size="3">{{m.date | date: 'dd/MM/yyyy HH:mm'}}</ion-col>
+              <ion-col size="3"
+                >{{m.proofType_name}}
+                <ion-text
+                  *ngIf="m.proofState_id!=2"
+                  [color]="(m.proofState_id==1)?'warning':'danger'"
+                >
+                  {{m.proofState_name}}</ion-text
+                ></ion-col
+              >
+              <ion-col size="4">{{m.details}}</ion-col>
+              <ion-col size="2">{{m.total}} </ion-col>
+            </ion-row>
+          </ion-grid>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>

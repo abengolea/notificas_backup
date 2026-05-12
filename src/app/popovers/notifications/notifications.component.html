@@ -1,0 +1,44 @@
+<ion-list id="inbox-list">
+  <ion-menu-toggle auto-hide="false">
+    <ion-item (click)="goToReader()" lines="none" detail="false">
+      <i class="las la-eye"></i>
+      <ion-label color="medium">Leer</ion-label>
+    </ion-item>
+    <ion-item
+      (click)="goToResponse()"
+      lines="none"
+      detail="false"
+      *ngIf="showResponse"
+    >
+      <i class="las la-share"></i>
+      <ion-label color="medium">Responder</ion-label>
+    </ion-item>
+    <ion-item
+      (click)="duplicate()"
+      lines="none"
+      detail="false"
+      *ngIf="showDuplicate"
+    >
+      <i class="las la-copy"></i>
+      <ion-label color="medium">Duplicar</ion-label>
+    </ion-item>
+    <ion-item
+      (click)="createPDF()"
+      routerLink="/"
+      lines="none"
+      detail="false"
+      *ngIf="showTrial"
+    >
+      <i class="las la-gavel"></i>
+      <ion-label color="medium">Acreditar en juicio</ion-label>
+    </ion-item>
+    <ion-item (click)="archiveDoc()" routerLink="/" lines="none" detail="false">
+      <i class="las la-archive"></i>
+      <ion-label color="medium">Archivar</ion-label>
+    </ion-item>
+    <!-- <ion-item  routerLink="/" lines="none" detail="false" *ngIf="showTemplate">
+      <i class="las la-copy"></i>
+      <ion-label color="medium">Guardar como plantilla</ion-label>
+    </ion-item>           -->
+  </ion-menu-toggle>
+</ion-list>

@@ -1,0 +1,75 @@
+<ion-content>
+  <ion-grid>
+    <ion-row>
+      <ion-col size="auto">
+        <h1 class="ion-margin-start color-secondary">
+          Plantillas
+        </h1>
+      </ion-col>
+      <ion-col *ngIf="wait">
+        <img src="/assets/images/loading.gif" style="height: 60px;margin-top: 5px;" />
+      </ion-col>
+    </ion-row>
+    <ion-row class="ion-padding">
+      <ion-col size="8">
+        <ion-item>
+          <ion-input
+            type="text"
+            aria-placeholder="Buscar..."
+            [disabled]="wait"
+            [(ngModel)]="textSearch"
+            (keyup.enter)="search()"
+            placeholder="Buscar..."
+            autocorrect="off"
+            autocapitalize="none"
+          >
+          </ion-input>
+          <ion-button (click)="search()" [disabled]="wait || !textSearch">
+            Buscar
+          </ion-button>
+        </ion-item>
+      </ion-col>
+      <ion-col size="2">
+        <ion-button (click)="new()"> Nuevo </ion-button>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col size="12">
+        <ion-card class="bg-white">
+          <ion-grid class="ion-padding">
+            <ion-row class="ion-padding">
+              <ion-col size="5" class="ion-text-bold">Nombre</ion-col>
+              <ion-col size="4" class="ion-text-bold">Tipo Documento</ion-col>
+              <ion-col class="ion-text-bold"></ion-col>
+            </ion-row>
+            <ion-row  class="ion-padding-horizontal" style="border-bottom: 1px solid #f3f3f3;"  *ngFor="let temp of templates;let i=index">
+              <ion-col
+                size="10"
+                class="link hover-effect"
+                (click)="edit(temp.id)"
+              >
+                <ion-row>
+                  <ion-col size="5">{{temp.name}}</ion-col>
+                  <ion-col size="4"
+                    >{{!!temp.documentType ? temp.documentType.name :
+                    ''}}</ion-col
+                  >
+                </ion-row>
+              </ion-col>
+              <ion-col>
+                <ion-row>
+                  <ion-col>
+                    <ion-button size="small" (click)="delete(temp)" color="danger" title="Borrar template">
+                      <i class="las la-trash-alt icon-delete"></i>
+                      <ion-text *ngIf="temp.banSeguroDelete"> ¿Seguro?</ion-text>    
+                    </ion-button>
+                  </ion-col>
+                </ion-row>
+              </ion-col>
+            </ion-row>
+          </ion-grid>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>

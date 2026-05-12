@@ -1,0 +1,250 @@
+<ion-content [fullscreen]="true">
+    <ion-toolbar class="ion-hide-lg-up">
+        <ion-buttons slot="start">
+            <ion-menu-button></ion-menu-button>
+        </ion-buttons>
+        <ion-title>
+            <img src="../assets/images/logo_notificas.jpg" style="height: 50px" />
+        </ion-title>
+        <ion-buttons slot="end">
+            <ion-button shape="round" size="large">
+                <ion-icon name="person-outline"></ion-icon>
+            </ion-button>
+        </ion-buttons>
+    </ion-toolbar>
+
+    <ion-grid>
+        <!-- <ion-row>
+      <ion-col size="12" size-sm="7">
+        <ion-card (click)="newNotification()" class="bg-white link hover-effect card-nuevo-envio">
+          <ion-grid>
+            <ion-row>
+              <ion-col>
+                <ion-card-header>
+                  <ion-card-subtitle>Card Subtitle</ion-card-subtitle>
+                  <ion-card-title>
+                    <img src="/assets/images/nuevo_envio.png" style="max-height: 35px; margin-right: 15px;" />
+                    Nuevo envio
+                  </ion-card-title>
+                </ion-card-header>
+                <ion-card-content class="ion-hide-sm-down">
+                  This is content, without any paragraph or header tags,
+                  within an ion-card-content element.
+                </ion-card-content>
+              </ion-col>
+            </ion-row>
+          </ion-grid>
+        </ion-card>
+      </ion-col>
+      <ion-col size="12" size-sm="5" class="ion-hide-sm-down">
+        <ion-card class="bg-white card-bienvenida">
+          <ion-grid>
+            <ion-row>
+              <ion-col size="8">
+                <ion-card-header>
+                  <ion-card-subtitle></ion-card-subtitle>
+                  <ion-card-title>Bienvenido {{!!currentUser ? currentUser.firstname: null}} </ion-card-title>
+                </ion-card-header>
+                <ion-card-content>
+
+                </ion-card-content>
+                <ion-button size="small" color="secondary" class="ion-margin-start" (click)="goProfile()">
+                  Ver mi perfil
+                </ion-button>
+              </ion-col>
+            </ion-row>
+          </ion-grid>
+        </ion-card>
+      </ion-col>
+    </ion-row> -->
+
+        <!-- <ion-tabs style="margin-top:70px ;">
+      <ion-tab-bar slot="top">
+        <ion-tab-button tab="schedule">
+          <ion-icon name="calendar"></ion-icon>
+          <ion-label>Carta Documento</ion-label>
+          <ion-badge  color="primary">0</ion-badge>
+        </ion-tab-button>
+
+        <ion-tab-button tab="speakers">
+          <ion-icon name="person-circle"></ion-icon>
+          <ion-label>Intimación</ion-label>
+          <ion-badge  color="tertiary">0</ion-badge>
+        </ion-tab-button>
+
+        <ion-tab-button tab="map">
+          <ion-icon name="map"></ion-icon>
+          <ion-label>Comunicación</ion-label>
+          <ion-badge  color="warning">1</ion-badge>
+        </ion-tab-button>
+
+        <ion-tab-button tab="about">
+          <ion-icon name="information-circle"></ion-icon>
+          <ion-label>Notificación</ion-label>
+          <ion-badge  color="secondary">1</ion-badge>
+        </ion-tab-button>
+
+        <ion-tab-button tab="speakers">
+          <ion-icon name="person-circle"></ion-icon>
+          <ion-label>Contestación</ion-label>
+          <ion-badge  color="danger">0</ion-badge>
+        </ion-tab-button>
+
+        <ion-tab-button tab="map">
+          <ion-icon name="map"></ion-icon>
+          <ion-label>Oferta</ion-label>
+          <ion-badge  color="warning">0</ion-badge>
+        </ion-tab-button>
+
+        <ion-tab-button tab="about">
+          <ion-icon name="information-circle"></ion-icon>
+          <ion-label>Oficio Judicial</ion-label>
+          <ion-badge  color="danger">0</ion-badge>
+        </ion-tab-button>
+      </ion-tab-bar>
+    </ion-tabs> -->
+
+        <ion-row>
+            <ion-col size="auto">
+                <h1 class="ion-margin-start color-secondary">
+                    Bandeja de Entrada <small>(Notificaciones Recientes)</small>
+                </h1>
+            </ion-col>
+            <ion-col *ngIf="wait">
+                <img src="/assets/images/loading.gif" style="height: 60px; margin-top: 5px" />
+            </ion-col>
+        </ion-row>
+
+
+        <ion-row>
+            <ion-grid class="ion-padding">
+                <ion-toolbar style="min-height:0">
+                    <ion-title class="search_box">
+                        <ion-input type="text" [(ngModel)]="buscador" placeholder="Que desea buscar" (keyup)="search()"></ion-input>
+                    </ion-title>
+                    <ion-buttons slot="primary">
+                        <ion-button fill="solid" color="primary" shape="round" (click)="clearSearch()" *ngIf="buscador.length > 0"> Borrar busqueda
+                            <ion-icon slot="end" name="arrow-back-circle"></ion-icon>
+                        </ion-button>
+                    </ion-buttons>
+                </ion-toolbar>
+                <ion-toolbar style="min-height:0!important;--min-height:24px!important">
+                    <ion-label color="secondary">
+                        Total de Notificaciones:<strong> {{ documents.length}} </strong>
+                    </ion-label>
+                    <ion-label color="danger" *ngIf="documents.length !== documentosFiltrados.length">
+                        (Filtrados: {{documentosFiltrados.length}} )
+                        <span class="spaneo" (click)="clearSearch()">Ver Todos</span>
+                    </ion-label>
+                </ion-toolbar>
+            </ion-grid>
+        </ion-row>
+
+        <ion-row>
+            <ion-col size="auto">
+                <h4 class="ion-margin-start color-secondary">Tipos</h4>
+                <ion-chip outline color="primary" (click)="filterByAlias('comunication')">
+                    <ion-icon name="mail-unread-outline"></ion-icon>
+                    <ion-label>Comunicación</ion-label>
+                    <ion-badge color="light" style="margin-left: 10px">{{dato1}}</ion-badge>
+                </ion-chip>
+                <ion-chip outline color="primary" (click)="filterByAlias('notification')">
+                    <ion-icon name="mail-unread-outline"></ion-icon>
+                    <ion-label>Notificación</ion-label>
+                    <ion-badge color="light" style="margin-left: 10px">{{dato2}}</ion-badge>
+                </ion-chip>
+                <ion-chip outline color="primary" (click)="filterByAlias('response')">
+                    <ion-icon name="mail-unread-outline"></ion-icon>
+                    <ion-label>Contestación</ion-label>
+                    <ion-badge color="light" style="margin-left: 10px">{{dato3}}</ion-badge>
+                </ion-chip>
+                <ion-chip outline color="primary" (click)="filterByAlias('offer')">
+                    <ion-icon name="mail-unread-outline"></ion-icon>
+                    <ion-label>Oferta</ion-label>
+                    <ion-badge color="light" style="margin-left: 10px">{{dato4}}</ion-badge>
+                </ion-chip>
+                <ion-chip outline color="primary">
+                    <ion-icon name="mail-unread-outline"></ion-icon>
+                    <ion-label>Intimación</ion-label>
+                    <ion-badge color="light" style="margin-left: 10px">{{dato5}}</ion-badge>
+                </ion-chip>
+                <ion-chip outline color="primary" (click)="filterByAlias('judicialoffice')">
+                    <ion-icon name="mail-unread-outline"></ion-icon>
+                    <ion-label>Oficio Judicial</ion-label>
+                    <ion-badge color="light" style="margin-left: 10px">{{dato6}}</ion-badge>
+                </ion-chip>
+            </ion-col>
+        </ion-row>
+
+        <ion-row>
+            <ion-col>
+                <ion-card class="bg-white">
+                    <ion-grid class="ion-padding">
+                        <ion-row class="ion-padding">
+                            <ion-col class="ion-text-bold">Fecha enviado</ion-col>
+                            <ion-col class="ion-text-bold">Tipo</ion-col>
+                            <ion-col class="ion-text-bold">Emisor</ion-col>
+                            <ion-col class="ion-text-bold">Destinatario</ion-col>
+                            <ion-col class="ion-text-bold">Asunto</ion-col>
+                            <ion-col class="ion-text-bold">Ult. estado</ion-col>
+                            <ion-col class="ion-text-bold"></ion-col>
+                        </ion-row>
+                        <ion-row *ngIf="!wait && !documentosFiltrados">
+                            <ion-col>
+                                <h6>No posee notificaciones pendientes</h6>
+                            </ion-col>
+                        </ion-row>
+                        <ion-row class="ion-padding-horizontal" style="border-bottom: 1px solid #f3f3f3" *ngFor="let doc of documentosFiltrados">
+                            <ion-col size="10" class="link hover-effect" (click)="goToReader(doc.uuid)">
+                                <ion-row>
+                                    <ion-col>{{doc.createdAt | date: 'dd/MM/yyyy HH:mm' }}</ion-col>
+                                    <ion-col>{{doc.documentType ? doc.documentType.name : null}}
+                                    </ion-col>
+                                    <ion-col>
+                                        <div *ngFor="let docUser of doc.documentUsers">
+                                            <div *ngIf="!!docUser.documentUserType && docUser.documentUserType.alias === 'sender'">
+                                                <ion-text [color]="(currentUser.id==docUser.user.id)?'secondary':''">{{docUser.user.lastname}}, {{docUser.user.firstname}}
+                                                </ion-text>
+                                            </div>
+                                        </div>
+                                    </ion-col>
+                                    <ion-col>
+                                        <div *ngFor="let docUser of doc.documentUsers">
+                                            <div *ngIf="!!docUser.documentUserType && docUser.documentUserType.alias === 'destination'">
+                                                <ion-text [color]="(currentUser.id==docUser.user.id)?'secondary':''">{{docUser.user.lastname}}, {{docUser.user.firstname}}
+                                                </ion-text>
+                                            </div>
+                                        </div>
+                                    </ion-col>
+                                    <ion-col>{{doc.subject}}</ion-col>
+                                    <ion-col>
+                                        <span *ngIf="doc.lastTransaction">{{doc.lastTransaction.transactionType.name}}</span
+                    >
+                  </ion-col>
+                </ion-row>
+              </ion-col>
+              <ion-col size="2">
+                <ion-row>
+                  <ion-col>
+                    <ion-button
+                      color="primary"
+                      (click)="createPopover($event, doc)"
+                      fill="clear"
+                      size="small"
+                      color="secondary"
+                    >
+                      <ion-icon
+                        slot="icon-only"
+                        name="ellipsis-horizontal-outline"
+                      ></ion-icon>
+                    </ion-button>
+                  </ion-col>
+                </ion-row>
+              </ion-col>
+            </ion-row>
+          </ion-grid>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>

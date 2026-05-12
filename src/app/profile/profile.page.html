@@ -1,0 +1,203 @@
+<ion-content>
+  <ion-grid>
+    <ion-row>
+      <ion-col>
+        <h1 class="ion-margin-start color-secondary">Perfil</h1>
+      </ion-col>
+    </ion-row>
+
+    <form [formGroup]="profileForm" (ngSubmit)="save()">
+      <ion-row>
+        <ion-col>
+          <ion-item>
+            <ion-label position="stacked">Tipo de Usuario</ion-label>
+            <ion-input value="{{userTypeSelected.name}}" readonly></ion-input>
+            <!-- <ion-select
+              formControlName="userType"
+              placeholder="Seleccionar"
+              [(ngModel)]="userTypeSelected"
+              [compareWith]="compararPorId"
+            >
+              <ion-select-option *ngFor="let ut of userTypes" [value]="ut"
+                >{{ut.name}}</ion-select-option
+              >
+            </ion-select> -->
+          </ion-item>
+        </ion-col>
+      </ion-row>
+
+      <ion-row>
+        <ion-col>
+          <ion-item>
+            <ion-label class="title-label" *ngIf="userTypeSelected.id!=4"
+              >Apellido*</ion-label
+            >
+            <ion-label class="title-label" *ngIf="userTypeSelected.id==4"
+              >Razón social*</ion-label
+            >
+            <ion-input
+              formControlName="lastName"
+              placeholder="Apellido"
+            ></ion-input>
+          </ion-item>
+          <div *ngFor="let error of errorMessages.lastName">
+            <ng-container
+              *ngIf="lastName.hasError(error.type) && (lastName.dirty || lastName.touched)"
+            >
+              <small class="error-message">{{error.message}}</small>
+            </ng-container>
+          </div>
+        </ion-col>
+        <ion-col>
+          <ion-item>
+            <ion-label class="title-label" *ngIf="userTypeSelected.id!=4"
+              >Nombre*</ion-label
+            >
+            <ion-label class="title-label" *ngIf="userTypeSelected.id==4"
+              >Nombre fantasía*</ion-label
+            >
+            <ion-input
+              formControlName="firstName"
+              placeholder="Nombre"
+            ></ion-input>
+          </ion-item>
+          <div *ngFor="let error of errorMessages.firstName">
+            <ng-container
+              *ngIf="firstName.hasError(error.type) && (firstName.dirty || firstName.touched)"
+            >
+              <small class="error-message">{{error.message}}</small>
+            </ng-container>
+          </div>
+        </ion-col>
+      </ion-row>
+
+      <ion-row>
+        <ion-col *ngIf="userTypeSelected && userTypeSelected.id!=4">
+          <ion-item>
+            <ion-label position="stacked">DNI</ion-label>
+            <ion-input formControlName="dni" placeholder=""></ion-input>
+          </ion-item>
+        </ion-col>
+        <ion-col>
+          <ion-item>
+            <ion-label position="stacked">CUIT</ion-label>
+            <ion-input formControlName="cuit" placeholder=""></ion-input>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+
+      <ion-row>
+        <ion-col>
+          <ion-item>
+            <ion-label position="stacked">Teléfono</ion-label>
+            <ion-input formControlName="phoneNumber" placeholder=""></ion-input>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+
+      <ion-row *ngIf="banEmailValidate==false">
+        <ion-col>
+          <ion-item>
+            <ion-label position="stacked">E-mail</ion-label>
+            <ion-input formControlName="email" placeholder="E-Mail"></ion-input>
+          </ion-item>
+          <div *ngFor="let error of errorMessages.email">
+            <ng-container
+              *ngIf="email.hasError(error.type) && (email.dirty || email.touched)"
+            >
+              <small class="error-message">{{error.message}}</small>
+            </ng-container>
+          </div>
+        </ion-col>
+        <ion-col *ngIf="!userService.getUser().emailValidated">
+          <ion-button
+            class="footer-button"
+            color="danger"
+            [disabled]="wait"
+            (click)="validateEmail()"
+          >
+            Validar e-mail</ion-button
+          >
+          <div>
+            <small class="error-message" color="danger"
+              >Debe validar su e-mail para poder realizar envios.</small
+            >
+          </div>
+        </ion-col>
+      </ion-row>
+
+      <ion-row *ngIf="banEmailValidate">
+        <ion-col>
+          <ion-item>
+            <ion-label position="stacked">Código validación</ion-label>
+            <ion-input
+              formControlName="recoverpassword"
+              placeholder="Enviado a {{email.value}} "
+            ></ion-input>
+          </ion-item>
+        </ion-col>
+        <ion-col>
+          <ion-button
+            class="footer-button"
+            color="success"
+            [disabled]="wait || recoverpassword.value==''"
+            (click)="validateEmail()"
+          >
+            Verificar código</ion-button
+          >
+        </ion-col>
+      </ion-row>
+
+      <ion-row>
+        <ion-col size-xs="12">
+          <ion-item>
+            <ion-label class="lawyer-label">Publicar mis datos</ion-label>
+            <ion-checkbox
+              formControlName="publicData"
+              placeholder=""
+            ></ion-checkbox>
+          </ion-item>
+          <div class="ion-margin-top">
+            <ion-text color="primary">
+              <ion-icon name="information-circle-outline"></ion-icon> Los
+              usuarios podrán encontrarte en el buscador.
+            </ion-text>
+          </div>
+        </ion-col>
+      </ion-row>
+      <ion-card style="position: absolute; bottom: 0px; width: 99%; left: 0px">
+        <ion-row class="footer-row">
+          <ion-col class="ion-text-end">
+            <div class="footer-button-container">
+              <ion-button
+                class="footer-button"
+                expand="full"
+                color="primary"
+                [disabled]="wait"
+                type="submit"
+                >Guardar datos</ion-button
+              >
+              <ion-button
+                class="footer-button"
+                expand="full"
+                color="danger"
+                [disabled]="wait"
+                (click)="goHome()"
+                >Cancelar</ion-button
+              >
+              <ion-button
+                class="footer-button"
+                expand="full"
+                color="warning"
+                [disabled]="wait"
+                (click)="recoverPassword()"
+              >
+                Modificar contraseña</ion-button
+              >
+            </div>
+          </ion-col>
+        </ion-row>
+      </ion-card>
+    </form>
+  </ion-grid>
+</ion-content>

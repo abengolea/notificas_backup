@@ -1,0 +1,55 @@
+<ion-content>
+  <ion-grid>
+    <ion-row>
+      <ion-col>
+        <h1>Borradores</h1>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col size="12">
+        <ion-card class="bg-white">
+          <ion-grid class="ion-padding">
+            <ion-row class="ion-padding">
+              <ion-col class="ion-text-bold">Fecha Creación</ion-col>
+              <ion-col class="ion-text-bold">Tipo</ion-col>
+              <ion-col class="ion-text-bold">Emisor</ion-col>
+              <ion-col class="ion-text-bold">Destinatarios</ion-col>
+              <ion-col class="ion-text-bold">Asunto</ion-col>
+              <ion-col class="ion-text-bold">Acciones</ion-col>
+            </ion-row>
+            <ion-row class="ion-padding" *ngFor="let doc of documents">
+              <ion-col size="10" class="link hover-effect" (click)="editDocument(doc)">
+                <ion-row>
+                  <ion-col>{{doc.createdAt | date: 'dd/MM/yyyy' }}</ion-col>
+                  <ion-col>{{doc.documentType ? doc.documentType.name : null}}</ion-col>
+                  <ion-col>
+                    <div *ngFor="let docUser of doc.documentUsers">
+                      <div *ngIf="!!docUser.documentUserType && docUser.documentUserType.alias === 'sender'">
+                        {{docUser.user.lastname}}, {{docUser.user.firstname}}
+                      </div>
+                    </div>
+                  </ion-col>
+                  <ion-col>
+                    <div *ngFor="let docUser of doc.documentUsers">
+                      <div *ngIf="!!docUser.documentUserType && docUser.documentUserType.alias === 'destination'">
+                        {{docUser.user.lastname}}, {{docUser.user.firstname}}
+                      </div>
+                    </div>
+                  </ion-col>
+                  <ion-col>{{doc.subject}}</ion-col>
+                </ion-row>
+              </ion-col>
+              <ion-col size="2">
+                <ion-row>
+                  <ion-col>
+                    <i class="las la-trash-alt icon-delete" title="Borrar documento" (click)="deleteDocument(doc)"></i>
+                  </ion-col>
+                </ion-row>                
+              </ion-col>
+            </ion-row>
+          </ion-grid>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>

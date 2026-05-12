@@ -1,0 +1,325 @@
+<ion-content class="ion-padding">
+  <ion-card *ngIf="!registro && !recover" class="login-con ion-margin-top">
+    <ion-grid>
+      <ion-row>
+        <ion-col class="ion-text-center">
+          <img
+            src="../../assets/images/logo_notificas.jpg"
+            style="width: 60%"
+          />
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col class="ion-text-center">
+          <h2>Bienvenido</h2>
+          <p>Ingrese sus datos para iniciar sesión</p>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col>
+          <ion-item>
+            <ion-label position="fixed">E-Mail</ion-label>
+            <ion-input
+              [(ngModel)]="loginData.email"
+              name="email"
+              (keyup.enter)="login()"
+            ></ion-input>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col>
+          <ion-item>
+            <ion-label position="fixed">Password</ion-label>
+            <ion-input
+              [(ngModel)]="loginData.password"
+              name="password"
+              type="password"
+              (keyup.enter)="login()"
+            >
+            </ion-input>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col class="ion-text-end">
+          <ion-button
+            fill="clear"
+            color="secondary"
+            size="small"
+            (click)="recoverPassword()"
+          >
+            ¿Olvidaste tu contraseña?
+          </ion-button>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col class="ion-text-center">
+          <ion-button expand="full" color="secondary" (click)="login()"
+            >Ingresar</ion-button
+          >
+        </ion-col>
+      </ion-row>
+      <ion-row class="ion-align-items-center">
+        <ion-col class="ion-text-center">
+          ¿Eres nuevo? Create una cuenta
+          <ion-text color="secondary" class="link" (click)="registro = true"
+            >aquí</ion-text
+          >
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </ion-card>
+
+  <form [formGroup]="registroForm" (ngSubmit)="signIn()">
+    <ion-card *ngIf="registro" class="login-con ion-margin-top">
+      <ion-grid>
+        <ion-row>
+          <ion-col class="ion-text-center">
+            <img
+              src="../../assets/images/logo_notificas.jpg"
+              style="width: 60%"
+            />
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col class="ion-text-center">
+            <h2>Bienvenido</h2>
+            <p>
+              Completa los siguientes campos para crear tu cuenta en Notificas
+            </p>
+          </ion-col>
+        </ion-row>
+
+        <ion-row>
+          <ion-col>
+            <ion-item>
+              <ion-label position="stacked">Tipo de Usuario*</ion-label>
+              <ion-select
+                formControlName="userType"
+                placeholder="Seleccionar"
+                [(ngModel)]="userTypeSelected"
+                [compareWith]="compararPorId"
+              >
+                <ion-select-option *ngFor="let ut of userTypes" [value]="ut"
+                  >{{ut.name}}</ion-select-option
+                >
+              </ion-select>
+            </ion-item>
+          </ion-col>
+        </ion-row>
+        <ion-row *ngIf="userTypeSelected && userTypeSelected.id!=4">
+          <ion-col *ngIf="userTypeSelected">
+            <ion-item>
+              <ion-label position="floating" *ngIf="userTypeSelected.id!=4"
+                >Apellido*</ion-label
+              >
+              <ion-label position="floating" *ngIf="userTypeSelected.id==4"
+                >Razón social*</ion-label
+              >
+              <ion-input formControlName="lastName" placeholder=""></ion-input>
+            </ion-item>
+            <div *ngFor="let error of errorMessages.lastName">
+              <ng-container
+                *ngIf="lastName.hasError(error.type) && (lastName.dirty || lastName.touched)"
+              >
+                <small class="error-message">{{error.message}}</small>
+              </ng-container>
+            </div>
+          </ion-col>
+          <ion-col *ngIf="userTypeSelected">
+            <ion-item>
+              <ion-label position="floating" *ngIf="userTypeSelected.id!=4"
+                >Nombre*</ion-label
+              >
+              <ion-label position="floating" *ngIf="userTypeSelected.id==4"
+                >Nombre fantasía*</ion-label
+              >
+              <ion-input formControlName="firstName" placeholder=""></ion-input>
+            </ion-item>
+            <div *ngFor="let error of errorMessages.firstName">
+              <ng-container
+                *ngIf="firstName.hasError(error.type) && (firstName.dirty || firstName.touched)"
+              >
+                <small class="error-message">{{error.message}}</small>
+              </ng-container>
+            </div>
+          </ion-col>
+        </ion-row>
+
+        <ion-row *ngIf="userTypeSelected && userTypeSelected.id!=4">
+          <ion-col>
+            <ion-item>
+              <ion-label position="floating">E-mail</ion-label>
+              <ion-input formControlName="email" placeholder=""></ion-input>
+            </ion-item>
+            <div *ngFor="let error of errorMessages.email">
+              <ng-container
+                *ngIf="email.hasError(error.type) && (email.dirty || email.touched)"
+              >
+                <small class="error-message">{{error.message}}</small>
+              </ng-container>
+            </div>
+          </ion-col>
+        </ion-row>
+        <ion-row *ngIf="userTypeSelected && userTypeSelected.id!=4">
+          <ion-col size-xs="12">
+            <ion-item>
+              <ion-label position="floating">Contraseña</ion-label>
+              <ion-input
+                formControlName="password"
+                type="password"
+                placeholder=""
+              ></ion-input>
+            </ion-item>
+            <div *ngFor="let error of errorMessages.password">
+              <ng-container
+                *ngIf="password.hasError(error.type) && (password.dirty || password.touched)"
+              >
+                <small class="error-message">{{error.message}}</small>
+              </ng-container>
+            </div>
+          </ion-col>
+          <ion-col size-xs="12">
+            <ion-item>
+              <ion-label position="floating">Confirmar contraseña</ion-label>
+              <ion-input
+                formControlName="confirmpassword"
+                type="password"
+                placeholder=""
+              >
+              </ion-input>
+            </ion-item>
+            <div *ngFor="let error of errorMessages.confirmpassword">
+              <ng-container
+                *ngIf="password.hasError(error.type) && (confirmpassword.dirty || confirmpassword.touched)"
+              >
+                <small class="error-message">{{error.message}}</small>
+              </ng-container>
+            </div>
+          </ion-col>
+        </ion-row>
+        <ion-row *ngIf="userTypeSelected && userTypeSelected.id!=4">
+          <ion-col size-xs="12">
+            <ion-item>
+              <ion-label class="lawyer-label">¿Sos abogado?</ion-label>
+              <ion-checkbox
+                formControlName="isLawyer"
+                placeholder="¿Sos abogado?"
+              ></ion-checkbox>
+            </ion-item>
+          </ion-col>
+        </ion-row>
+        <ion-row *ngIf="banRecoverpassword">
+          <ion-col size-xs="12">
+            <ion-item>
+              <ion-label class="lawyer-label">Código</ion-label>
+              <ion-input
+                formControlName="recoverpassword"
+                type="text"
+                placeholder="Recibido al email"
+              >
+              </ion-input>
+            </ion-item>
+          </ion-col>
+        </ion-row>
+        <ion-row
+          class="ion-align-items-center"
+          *ngIf="userTypeSelected && userTypeSelected.id==4"
+        >
+          <ion-col class="ion-text-center">
+            Para personas jurídicas enviar email a
+            <ion-text color="secondary" class="link" (click)="contacto()">
+              contacto@notificas.com</ion-text
+            >
+          </ion-col>
+        </ion-row>
+        <ion-row *ngIf="userTypeSelected && userTypeSelected.id!=4">
+          <ion-col class="ion-text-center">
+            <ion-button
+              expand="full"
+              color="secondary"
+              [disabled]="!registroForm.valid || wait"
+              type="submit"
+              >Registrarse
+            </ion-button>
+          </ion-col>
+        </ion-row>
+        <ion-row class="ion-align-items-center">
+          <ion-col class="ion-text-center">
+            Si ya tienes una cuenta, ingresa por
+            <ion-text color="secondary" class="link" (click)="registro = false">
+              aquí</ion-text
+            >
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </ion-card>
+  </form>
+
+  <form [formGroup]="recoverForm" (ngSubmit)="changePassword()">
+    <ion-card *ngIf="recover" class="login-con ion-margin-top">
+      <ion-grid>
+        <ion-row>
+          <ion-col class="ion-text-center">
+            <img
+              src="../../assets/images/logo_notificas.jpg"
+              style="width: 60%"
+            />
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col class="ion-text-center">
+            <h2>Bienvenido</h2>
+            <p>Ingrese la nueva contraseña</p>
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col size-xs="12">
+            <ion-item>
+              <ion-input
+                formControlName="password"
+                type="password"
+                placeholder="Contraseña"
+              ></ion-input>
+            </ion-item>
+            <div *ngFor="let error of errorMessages.password">
+              <ng-container
+                *ngIf="password.hasError(error.type) && (password.dirty || password.touched)"
+              >
+                <small class="error-message">{{error.message}}</small>
+              </ng-container>
+            </div>
+          </ion-col>
+          <ion-col size-xs="12">
+            <ion-item>
+              <ion-input
+                formControlName="confirmpassword"
+                type="password"
+                placeholder="Confirmar Contraseña"
+              >
+              </ion-input>
+            </ion-item>
+            <div *ngFor="let error of errorMessages.confirmpassword">
+              <ng-container
+                *ngIf="password.hasError(error.type) && (confirmpassword.dirty || confirmpassword.touched)"
+              >
+                <small class="error-message">{{error.message}}</small>
+              </ng-container>
+            </div>
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col class="ion-text-center">
+            <ion-button
+              color="secondary"
+              [disabled]="!recoverForm.valid || wait"
+              type="submit"
+              >Cambiar contraseña
+            </ion-button>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </ion-card>
+  </form>
+</ion-content>

@@ -1,0 +1,27 @@
+ion-toolbar{
+  min-height:0!important;
+}
+
+ion-button:hover{
+  color: red!important;
+}
+ion-toolbar{
+ --background:rgba(188, 220, 245, 0.287);
+ border-bottom: 1px solid black;
+}
+::ng-deep.modalOFerta .modal-wrapper {
+  min-width: 450px;
+  width:70%;
+  height: 280px;
+}
+
+.footer-button-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.is-invalid{
+  color: rgb(255, 0, 0);
+  font-weight: 600;
+}

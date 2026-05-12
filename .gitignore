@@ -1,0 +1,54 @@
+# Angular
+/.angular/cache
+/dist
+/www
+/coverage
+
+# Dependencies
+/node_modules
+
+# IDE
+/.idea
+/.vscode
+*.sublime-project
+*.sublime-workspace
+
+# OS
+.DS_Store
+Thumbs.db
+UserInterfaceState.xcuserstate
+$RECYCLE.BIN/
+
+# Temp files
+*~
+*.sw[mnpcod]
+.tmp
+*.tmp
+*.tmp.*
+
+# Logs
+*.log
+log.txt
+npm-debug.log*
+
+# Environment
+.env
+.env.*
+!.env.example
+
+# Ionic
+/.ionic
+/.sass-cache
+/.sourcemaps
+/.versions
+
+# Firebase
+/.firebase
+
+# Platforms
+/platforms
+/plugins
+
+# Terraform
+/infra/app/*/.terraform*
+/infra/app/*/terraform*

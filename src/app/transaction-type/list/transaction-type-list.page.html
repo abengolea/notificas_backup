@@ -1,0 +1,84 @@
+<ion-content>
+  <ion-grid>
+    <ion-row>
+      <ion-col size="auto">
+        <h1 class="ion-margin-start color-secondary">
+          Tipos de Transacciones
+        </h1>
+      </ion-col>
+      <ion-col *ngIf="wait">
+        <img src="/assets/images/loading.gif" style="height: 60px;margin-top: 5px;" />
+      </ion-col>
+    </ion-row>
+
+    <ion-row class="ion-padding">
+      <ion-col size="8">
+        <ion-item>
+          <ion-input type="text" aria-placeholder="Buscar..." [(ngModel)]="textSearch" (keyup.enter)="search()"
+            [disabled]="wait" placeholder="Buscar..." autocorrect="off" autocapitalize="none">
+          </ion-input>
+          <ion-button (click)="search()" [disabled]="wait || !textSearch">
+            Buscar
+          </ion-button>
+        </ion-item>
+      </ion-col>
+    </ion-row>
+    <ion-col size="12" class="ion-padding">
+      <ion-button (click)="agregarOferta()" expand="small" shape="round" color="warning">
+        <ion-icon name="add-circle-outline" style="padding-right: 5px;"></ion-icon>
+        Agregar Oferta
+      </ion-button>
+    </ion-col>
+    <ion-row>
+
+    </ion-row>
+    <ion-row>
+      <ion-col size="12">
+        <ion-card class="bg-white">
+          <ion-grid class="ion-padding">
+            <ion-row class="ion-padding">
+              <ion-col size="10">
+                <ion-row>
+                  <ion-col size="8" class="ion-text-bold">Nombre</ion-col>
+                  <ion-col size="4" class="ion-text-bold">Total</ion-col>
+                </ion-row>
+              </ion-col>
+              <ion-col size="2" class="ion-text-bold">Opciones</ion-col>
+            </ion-row>
+            <ion-row class="ion-padding-horizontal" style="border-bottom: 1px solid #f3f3f3;"
+              *ngFor="let type of types">
+              <ion-col size="10" class="link hover-effect" (click)="edit(type.id)">
+                <ion-row>
+                  <ion-col size="8">{{type.name}} {{!!type.documentType ? ' | '+type.documentType.name : ''}}</ion-col>
+                  <ion-col size="4">{{type.total}}</ion-col>
+                </ion-row>
+              </ion-col>
+              <ion-col size="2">
+                <ion-row>
+                  <ion-col>
+                    <ion-button *ngIf="!type.required" size="small" (click)="toggleActive(type)"
+                      [color]="(type.active)?'success':'warning'" title="Mostrar/Ocultar">
+                      <i [class]="(type.active)?'las la-eye':'las la-eye-slash'"></i>
+                    </ion-button>
+
+                    <!-- Make a new method to modified the total remaining -->
+                    <ion-button *ngIf="type.name === 'Bonificación de 500 coins'" size="small" (click)="edit(type.id)"
+                      [color]="'light'" title="Total Bonos Disponibles">
+                      <ion-icon name="cart-outline"></ion-icon>{{type.gender}}
+                    </ion-button>
+                    <!-- Make a new method to modified the total remaining -->
+
+
+                    <ion-button *ngIf="type.required" size="small" (click)="toggleActive(type)" [color]="'danger'">
+                      <i [class]="'las la-lock'"></i>
+                    </ion-button>
+                  </ion-col>
+                </ion-row>
+              </ion-col>
+            </ion-row>
+          </ion-grid>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>

@@ -1,0 +1,21 @@
+ion-content {
+  --background: rgb(255, 255, 255);
+}
+
+.login-con {
+  max-width: 550px;
+  padding: 16px;
+  border-radius: 15px;
+  margin: auto;
+  margin-top: 50px;
+}
+.lawyer-label {
+  color: #808080;
+  font-weight: 100;
+}
+
+ion-item {
+  --border-color: rgb(216, 216, 216); // default underline color
+  --highlight-color-invalid: var(--ion-color-danger); // invalid underline color
+  --highlight-color-valid: var(--ion-color-secondary); // valid underline color
+}

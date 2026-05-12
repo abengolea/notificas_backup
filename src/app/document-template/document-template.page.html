@@ -1,0 +1,55 @@
+<ion-content>
+  <ion-grid>
+    <ion-row>
+      <ion-col *ngIf="!wait">
+        <h1 class="ion-margin-start color-secondary">
+          {{!!documentTemplate && !!documentTemplate.id ? 'Actualizando '+documentTemplate.name : 'Nuevo Template'}}
+        </h1>
+      </ion-col>
+      <ion-col *ngIf="wait">
+        <img src="/assets/images/loading.gif" style="height: 60px;margin-top: 5px;" />
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        <ion-item>
+          <ion-label position="stacked">Tipos de Documentos*</ion-label>
+          <ion-select placeholder="Seleccione un tipo"
+                      okText="Ok" cancelText="Cancelar"
+                      [(ngModel)]="documentTemplate.documentType"
+                      [compareWith]="compararPorId">
+            <ion-select-option *ngFor="let dt of documentTypes" [value]="dt">{{dt.name}}</ion-select-option>
+          </ion-select>
+        </ion-item>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        <ion-item>
+          <ion-label position="stacked">Nombre*</ion-label>
+          <ion-input type="text" [(ngModel)]="documentTemplate.name"></ion-input>
+        </ion-item>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        <ckeditor [config]="configCKEditor"
+                  [(ngModel)]="documentTemplate.body"
+                  type="divarea">
+        </ckeditor>
+      </ion-col>
+    </ion-row>
+
+    <ion-row class="footer-row">
+      <ion-col>
+        <div class="footer-button-container">
+          <ion-button class="footer-button" color="light" 
+                      (click)="cancelForm()" [disabled]="wait">
+            Cancelar</ion-button>
+          <ion-button class="footer-button" color="danger" (click)="save()"
+            [disabled]="!canSubmit() || wait">Aceptar</ion-button>
+        </div>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>

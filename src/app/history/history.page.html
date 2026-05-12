@@ -1,0 +1,54 @@
+<ion-header class="ion-hide-md ion-text-center">
+  <ion-toolbar>
+    <img
+      src="/assets/images/logo_notificas.jpg"
+      style="margin: 15px;
+      max-height: 40px;"
+    />
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-row>
+    <ion-col style="padding: 10px">
+      <ion-card style="max-width: 1024px; margin: 10px auto">
+        <ion-card-header>
+          <ion-card-subtitle>
+            <ion-item>
+              <ion-label class="title-label" position="floating">Ingrese el UUID</ion-label>
+              <ion-input type="text" [(ngModel)]="document.uuid"></ion-input>
+            </ion-item>
+            <div class="ion-text-center">
+              <ion-button
+                color="success"
+                [disabled]="wait"
+                (click)="getHistory()"
+              >
+              Consultar historial trazado en blockchain</ion-button>
+            </div>
+          </ion-card-subtitle>
+        </ion-card-header>
+        <ion-card-content>
+          <div *ngFor="let t of historial"  class="movimientos">
+            <div
+              (click)="t.banShowMore = !t.banShowMore"
+              style="cursor: pointer"             
+            >
+              <ion-icon [name]="(t.banShowMore)?'chevron-down-outline':'chevron-forward-outline'" color="secondary"></ion-icon> 
+              [{{t.transaction.date}}] {{t.transaction.transactionstype.name}}
+              <div *ngIf="t.banShowMore" style="padding-left: 10px;">
+                UUID: {{t.transaction.uuid}}
+                <br>Tipo: {{t.document.documentsType.name}}
+                <br>Remitentes: <ion-label color="dark" *ngFor="let s of t.document.senders">{{s.firstname+' '+s.lastname}}[{{s.email}}]</ion-label>
+                <br>Destinatarios: <ion-label color="dark" *ngFor="let d of t.document.destinations">{{d.firstname+' '+d.lastname}}[{{d.email}}]</ion-label>
+                <br>Asunto: {{t.document.subject}} [{{t.document.hash_subject}}]
+                <br>Hash cuerpo: [{{t.document.hash_body}}]
+                <br>Cuerpo: <div [innerHTML]="t.document.body"></div>
+              </div>
+            </div>
+          </div>
+        </ion-card-content>
+      </ion-card>
+    </ion-col>
+  </ion-row>
+</ion-content>

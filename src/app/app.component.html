@@ -1,0 +1,116 @@
+<ion-app>
+    <!-- <ion-header [translucent]="false">
+    <ion-toolbar>
+      <ion-buttons slot="start">
+        <ion-menu-button></ion-menu-button>
+      </ion-buttons>
+      <ion-grid>
+        <ion-row class="ion-align-items-center">
+          <ion-col>
+            <ion-searchbar class="buscador-head" animated="true"  mode="md" placeholder="Buscar notificacion"></ion-searchbar>
+          </ion-col>
+          <ion-col size="auto">
+            <div routerLink="/login" class="letra-avatar link ion-margin-start ion-margin-end">A</div>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </ion-toolbar>
+  </ion-header> -->
+
+    <ion-split-pane contentId="main-content">
+        <ion-menu contentId="main-content" type="overlay">
+            <ion-content>
+                <ion-list id="logoList">
+                    <img src="../assets/images/logo_notificas.jpg" />
+                </ion-list>
+
+                <ion-list id="inbox-list">
+                    <ion-button color="secondary" class="nuevo-envio" (click)="newNotification()">
+                        <img src="/assets/images/nuevo_envio.png" /> Nuevo Envio
+                    </ion-button>
+                    <ion-menu-toggle auto-hide="false">
+                        <ion-item routerLink="/" lines="none" detail="false">
+                            <i class="las la-inbox"></i>
+                            <ion-label color="medium">Bandeja de Entrada</ion-label>
+                        </ion-item>
+                        <ion-item routerLink="/text-editor-list" lines="none" detail="false">
+                            <i class="lar la-file-alt iq-arrow-left"></i>
+                            <ion-label color="medium">Borradores</ion-label>
+                        </ion-item>
+                        <ion-item routerLink="/doc-archive-list" lines="none" detail="false">
+                            <i class="las la-archive iq-arrow-left"></i>
+                            <ion-label color="medium">Archivo</ion-label>
+                        </ion-item>
+                        <ion-item routerLink="/contacts" lines="none" detail="false">
+                            <i class="las la-address-book"></i>
+                            <ion-label color="medium">Contactos</ion-label>
+                        </ion-item>
+                        <!-- <ion-item  routerLink="/" lines="none" detail="false">
+              <i class="las la-gavel"></i>
+              <ion-label color="medium">Acreditar en juicio</ion-label>
+            </ion-item> -->
+                        <ion-item routerLink="/templates" lines="none" detail="false" *ngIf="banAdmin">
+                            <i class="las la-clipboard-list"></i>
+                            <ion-label color="medium">Plantillas</ion-label>
+                        </ion-item>
+                        <!-- <ion-item  routerLink="/" lines="none" detail="false">
+              <i class="las la-user-tie"></i>
+              <ion-label color="medium">Clientes</ion-label>
+            </ion-item>
+            <ion-item  routerLink="/" lines="none" detail="false">
+              <i class="las la-question-circle"></i>
+              <ion-label color="medium">Preguntas frecuentes </ion-label>
+            </ion-item> -->
+                        <ion-item routerLink="/transactions-types" lines="none" detail="false" *ngIf="banAdmin">
+                            <i class="las la-stream"></i>
+                            <ion-label color="medium">Tipos de Transacciones</ion-label>
+                        </ion-item>
+                        <ion-item routerLink="/users/lists" lines="none" detail="false" *ngIf="banAdmin">
+                            <i class="las la-users"></i>
+                            <ion-label color="medium">Usuarios</ion-label>
+                        </ion-item>
+                        <ion-item routerLink="/profile" lines="none" detail="false">
+                            <i class="las la-user"></i>
+                            <ion-label color="medium">Mi Perfil</ion-label>
+                        </ion-item>
+                        <ion-item (click)="logout()" lines="none" detail="false">
+                            <i class="las la-door-closed"></i>
+                            <ion-label color="medium">cerrar sesión</ion-label>
+                        </ion-item>
+                    </ion-menu-toggle>
+                </ion-list>
+
+                <ion-list id="labels-list">
+                    <div clas="ion-padding">
+                        <ion-title>
+                            <i class="las la-coins mr-2" style="font-size: 35px"></i>
+                            <ion-text style="vertical-align: top; margin-left: 8px; font-size: 22px">Billetera</ion-text>
+                        </ion-title>
+                    </div>
+                    <ion-chip color="secondary" routerLink="/current-account" outline="true" style="height: 50px; margin-top: 16px; margin-left: 19px">
+                        <ion-label color="secondary">Créditos</ion-label>
+                        <ion-chip color="secondary">
+                            <ion-label>{{ proofService.balance$ | async }}</ion-label>
+                        </ion-chip>
+                    </ion-chip>
+                    <ion-item>
+                        <span class="perfil-mail">{{useEmail}}</span>
+                    </ion-item>
+
+
+                    <!-- <ion-button
+            routerLink="/current-account"
+            fill="clear"
+            class="ion-margin-top"
+            color="secondary"
+          >
+            Comprar crédito
+            <i class="las la-arrow-right"></i>
+          </ion-button> -->
+                </ion-list>
+            </ion-content>
+        </ion-menu>
+
+        <ion-router-outlet id="main-content"></ion-router-outlet>
+    </ion-split-pane>
+</ion-app>
