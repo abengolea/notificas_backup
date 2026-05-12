@@ -36,6 +36,29 @@ npm-debug.log*
 .env.*
 !.env.example
 
+# Secrets / Credentials
+serviceAccount*.json
+firebase-adminsdk*.json
+*.pem
+*.key
+*.p12
+*.pfx
+credentials.json
+**/secrets/
+
+# Terraform state & vars with secrets
+*.tfstate
+*.tfstate.*
+*.tfvars
+.terraform/
+
+# Database dumps
+*.sql
+*.dump
+*.bak
+*.gz
+*.tar
+
 # Ionic
 /.ionic
 /.sass-cache

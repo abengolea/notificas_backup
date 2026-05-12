@@ -5,7 +5,7 @@
 export const environment = {
   production: false,
   /** Poné false para poder probar login en local cuando el mantenimiento termine */
-  maintenanceBlocked: true,
+  maintenanceBlocked: false,
 };
 
 /*
