@@ -50,7 +50,7 @@ build:
 #    - node_modules/
   script:
   - echo $DB_PORT
-  - sed -i "s#NOTIFICAS_API#${API}#" src/app/services/global.service.ts
+  - sed -i "s|apiUrl: '[^']*'|apiUrl: '${API}'|" src/environments/environment.prod.ts
   - rm -rf node_modules
   - npm install
   - ng build --prod --aot --outputHashing=all --base-href /

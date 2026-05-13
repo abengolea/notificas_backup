@@ -6,6 +6,8 @@ export const environment = {
   production: false,
   /** Poné false para poder probar login en local cuando el mantenimiento termine */
   maintenanceBlocked: false,
+  /** Base URL del backend Nest (sin barra final) */
+  apiUrl: 'http://localhost:3000',
 };
 
 /*

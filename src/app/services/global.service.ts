@@ -6,6 +6,7 @@ import {
   AlertController,
 } from '@ionic/angular';
 import { DatePipe } from '@angular/common';
+import { environment } from '../../environments/environment';
 
 export type ordenamiento = {
   nombre: string;
@@ -34,8 +35,7 @@ export class GlobalService {
     private alertController: AlertController,
     private datePipe: DatePipe
   ) {
-    // URL DE PRODUCCION RELATIVA
-    this.url_api = "NOTIFICAS_API";
+    this.url_api = environment.apiUrl;
 
     if (
       location.host === 'localhost:8100' ||
